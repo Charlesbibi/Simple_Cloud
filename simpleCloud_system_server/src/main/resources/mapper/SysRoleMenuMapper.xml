@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simple.cloud.mapper.SysRoleMenuMapper">
+  <resultMap id="BaseResultMap" type="com.simple.cloud.entities.SysRoleMenu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="menu_id" jdbcType="BIGINT" property="menuId" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
+
+    <resultMap id="LongListResultMap" type="java.util.ArrayList">
+        <result property="item" column="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+    </resultMap>
+
+    <!--根据id获取角色id集合 List<Long> getAssignById(Long id);-->
+  <select id="getAssignById" resultMap="LongListResultMap">
+    SELECT menu_id FROM system_role_menu WHERE role_id = #{id} AND is_deleted = 0
+  </select>
+
+  <!-- 删除role与menu对应关系 void deleteRoleMenu(Long id, List<Long> originalIdList);-->
+  <delete id="deleteRoleMenu">
+    UPDATE system_role_menu SET is_deleted = 1 WHERE role_id = #{id}
+        AND menu_id IN
+            <foreach collection="originalIdList" item="item" open="(" separator="," close=")">
+              #{item}
+            </foreach>
+  </delete>
+
+  <!-- // 修改角色-菜单的对应关系 - 新增新的
+    void reAssignRoleMenu(Long id, List<Long> idList); -->
+  <insert id="reAssignRoleMenu" >
+    INSERT INTO system_role_menu (role_id , menu_id) VALUES
+        <foreach collection="idList" item="item" separator=",">
+          (#{id},#{item})
+        </foreach>
+  </insert>
+
+
+</mapper>

@@ -1,0 +1,49 @@
+spring:
+  cloud:
+    gateway:
+      # 网关配置跨域请求
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedHeaders: "*"
+            allowedOriginPatterns: "*"
+            allowCredentials: true
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTION
+
+      routes:
+        - id: auth-service  #认证服务器
+          uri: lb://auth-server              #匹配后提供服务的路由地址
+          predicates:
+            - Path=/api/simple/cloud/access/**                      # 断言，路径相匹配的进行路由
+            - After=2024-04-25T17:06:30.444394600+08:00[Asia/Shanghai] #在这个时间后才能访问
+          filters: #过滤器
+            - RewritePath=/api/(?<segment>.*),/$\{segment} # 将跳转路径中包含的api替换成空
+
+        - id: business-server   # 业务服务器
+          uri: lb://business-server                #匹配后提供服务的路由地址
+          predicates:
+            - Path=/api/business/gateway/**                      # 断言，路径相匹配的进行路由
+            - After=2024-04-25T17:06:30.444394600+08:00[Asia/Shanghai] #在这个时间后才能访问
+          filters: #过滤器
+            - RewritePath=/api/(?<segment>.*),/$\{segment} # 将跳转路径中包含的api替换成空
+
+        - id: order-service    # 订单服务器
+          uri: lb://seata-order-service              #匹配后提供服务的路由地址
+          predicates:
+            - Path=/api/order/**                      # 断言，路径相匹配的进行路由
+            - After=2024-04-25T17:06:30.444394600+08:00[Asia/Shanghai] #在这个时间后才能访问
+          filters: #过滤器
+            - RewritePath=/api/(?<segment>.*),/$\{segment} # 将跳转路径中包含的api替换成空
+
+        - id: system-service   # 系统服务器
+          uri: lb://cloud-system-service                #匹配后提供服务的路由地址
+          predicates:
+            - Path=/api/system/**                      # 断言，路径相匹配的进行路由
+            - After=2024-04-25T17:06:30.444394600+08:00[Asia/Shanghai] #在这个时间后才能访问
+          filters: #过滤器
+            - RewritePath=/api/(?<segment>.*),/$\{segment} # 将跳转路径中包含的api替换成空

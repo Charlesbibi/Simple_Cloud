@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simple.cloud.mapper.SysMenuMapper">
+  <resultMap id="BaseResultMap" type="com.simple.cloud.entities.SysMenu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="component" jdbcType="VARCHAR" property="component" />
+    <result column="perms" jdbcType="VARCHAR" property="perms" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="sort_value" jdbcType="INTEGER" property="sortValue" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
+
+  <!--  List<SysMenu> getAllMenu();-->
+  <select id="getAllMenu" resultMap="BaseResultMap">
+    SELECT * FROM system_menu AS sm WHERE sm.status = 1 ORDER BY sm.sort_value;
+  </select>
+
+  <!--//获取所有菜单 List<SysMenu> getAllMenuById(Long userId);-->
+  <select id="getAllMenuById" resultMap="BaseResultMap">
+    SELECT distinct sm.id,sm.parent_id,sm.name,sm.type,sm.path,sm.component,sm.perms,sm.icon,
+                    sm.sort_value,sm.status,sm.is_deleted FROM system_menu sm
+                                                                 INNER JOIN system_role_menu srm ON sm.id = srm.menu_id
+                                                                 INNER JOIN system_user_role sur ON sur.role_id = srm.role_id
+    WHERE sur.user_id = #{userId} AND sm.status = 1 AND srm.is_deleted = 0
+      AND sur.is_deleted = 0 AND sm.is_deleted = 0
+  </select>
+
+  <!--// 根据roleId获取到对应的菜单列表
+    List<SysMenu> listAllByRoleId(Long id);-->
+  <select id="listAllByRoleId" resultMap="BaseResultMap">
+    SELECT distinct sm.id,sm.parent_id,sm.name,sm.type,sm.path,sm.component,sm.perms,sm.icon,
+                    sm.sort_value,sm.status,sm.is_deleted FROM system_menu sm
+                                                                 INNER JOIN system_role_menu srm ON sm.id = srm.menu_id
+    WHERE srm.role_id = #{id} AND sm.status = 1 AND srm.is_deleted = 0
+  </select>
+</mapper>

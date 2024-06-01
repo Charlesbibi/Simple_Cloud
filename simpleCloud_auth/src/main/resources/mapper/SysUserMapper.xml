@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simple.cloud.mapper.SysUserMapper">
+  <resultMap id="BaseResultMap" type="com.simple.cloud.entities.SysUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="head_url" jdbcType="VARCHAR" property="headUrl" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
+
+  <!-- // 根据email获取用户
+    SysUser getUserByEmail(String email);-->
+  <select id="getUserByEmail" resultMap="BaseResultMap">
+    SELECT * FROM system_user WHERE email = #{email} AND is_deleted = 0 AND status = 1
+  </select>
+</mapper>

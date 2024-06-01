@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simple.cloud.mapper.SysUserRoleMapper">
+  <resultMap id="BaseResultMap" type="com.simple.cloud.entities.SysUserRole">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
+
+  <!-- //角色查询 List<Long> getAllRoleIDbyUserId(Long id);-->
+  <select id="getAllRoleIDbyUserId" resultType="Long">
+    SELECT role_id FROM system_user_role WHERE user_id = #{id} AND is_deleted = 0
+  </select>
+
+  <!-- //角色分配 void doAssign(@Param("uid") Long uid, @Param("ridLists") List<Long> ridLists); -->
+  <delete id="doAssign">
+    UPDATE system_user_role SET is_deleted = 1 WHERE user_id = #{uid} AND
+        role_id IN
+        <foreach collection="ridLists" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+  </delete>
+
+  <!--     //角色分配 - 新增角色
+    void reDoAssign(Long uid, List<Long> roleIdList); -->
+  <insert id="reDoAssign">
+    INSERT INTO system_user_role (role_id, user_id)
+    VALUES
+    <foreach collection="roleIdList" item="item" separator=",">
+      (#{item}, #{uid})
+    </foreach>
+  </insert>
+</mapper>

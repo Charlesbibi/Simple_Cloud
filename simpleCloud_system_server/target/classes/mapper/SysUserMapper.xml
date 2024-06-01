@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simple.cloud.mapper.SysUserMapper">
+  <resultMap id="BaseResultMap" type="com.simple.cloud.entities.SysUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="head_url" jdbcType="VARCHAR" property="headUrl" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
+
+  <resultMap id="UserWrapRoleResultMap" type="com.simple.cloud.entities.SysUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="head_url" jdbcType="VARCHAR" property="headUrl" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="user_is_deleted" jdbcType="TINYINT" property="isDeleted" />
+    <collection property="roleList" ofType="com.simple.cloud.entities.SysRole">
+      <id property="id" jdbcType="BIGINT" column="role_id"/>
+      <result property="roleName" jdbcType="VARCHAR" column="role_name"/>
+      <result property="roleCode" jdbcType="VARCHAR" column="role_code"/>
+      <result property="description" jdbcType="VARCHAR" column="description"/>
+      <result property="isDeleted" jdbcType="TINYINT" column="role_is_deleted"/>
+    </collection>
+  </resultMap>
+
+  <!-- 根据用户名获取用户 SysUser getUserByUsername(String username);-->
+  <select id="getUserByUsername" resultMap="BaseResultMap">
+    SELECT * FROM system_user WHERE username = #{username} AND is_deleted = 0 AND status = 1
+  </select>
+
+  <!-- // 根据email获取用户
+    SysUser getUserByEmail(String email);-->
+  <select id="getUserByEmail" resultMap="BaseResultMap">
+    SELECT * FROM system_user WHERE email = #{email} AND is_deleted = 0 AND status = 1
+  </select>
+
+  <!-- // 查询所有的用户并封装roleList
+    List<SysUser> selectAllWrapRoleList(); -->
+  <select id="selectAllWrapRoleList" resultMap="UserWrapRoleResultMap">
+    SELECT u.id , u.username , u.email , u.phone , u.head_url , u.status , u.name ,
+           u.is_deleted as user_is_deleted , r.id as role_id ,
+           r.role_name , r.role_code , r.description , r.is_deleted as role_is_deleted
+    FROM system_user u
+        LEFT JOIN system_user_role ur ON ur.user_id = u.id
+        LEFT JOIN system_role r ON ur.role_id = r.id
+    WHERE u.is_deleted = 0
+  </select>
+
+<!--  // 根据id逻辑删除
+    int deleteByIsDeleted(Long id);-->
+  <update id="deleteByIsDeleted" >
+    UPDATE system_user SET is_deleted = 1 WHERE id = #{id}
+  </update>
+
+</mapper>
