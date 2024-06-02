@@ -12,12 +12,15 @@ Ultimately
 2. While others will be rejected, resulting in an **404access denied**.</br>
 
 # Quick Start
-Please note that before running, it is necessary to start the following five services.
+Please note that before running, it is necessary to start the following five services(Whether it's on a local machine, a remote server, or in a virtual machine). You can download latest version of those package in official website.
 </br> 
-> 1. nacos server
-> 2. seata server
-> 3. zipkin server(jar package)
-> 4. sentinel server(jar package)
-> 5. redis server
+> 1. **nacos** server
+> 2. **seata** server
+> 3. **zipkin** server(jar package)
+> 4. **sentinel** server(jar package)
+> 5. **redis** server
 
 After pulling the GitHub code in your compiler, you can run normally.
+
+# Example
+Under this architecture, we have built an example to simulate a business chain for `Placing orders -> Deducting account balance -> reducing inventory`.
