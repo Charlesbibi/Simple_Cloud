@@ -32,3 +32,7 @@ In this example
 - Unified calls between various microservices are implemented through **Feign** interfaces.
 
 For detail infomation you can find in the [createOrder method](https://github.com/Charlesbibi/Simple_Cloud/blob/main/simpleCloud_order_server/src/main/java/com/simple/cloud/service/impl/OrderServiceImpl.java)
+
+---
+We have also built front-end monitoring for this microservice server cluster. </br>
+For those interested readers , click [here](https://github.com/Charlesbibi/Simple_Cloud_Monitor) for more detail.
