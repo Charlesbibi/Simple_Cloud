@@ -23,4 +23,12 @@ Please note that before running, it is necessary to start the following five ser
 After pulling the GitHub code in your compiler, you can run normally.
 
 # Example
-Under this architecture, we have built an example to simulate a business chain for `Placing orders -> Deducting account balance -> reducing inventory`.
+Under this architecture, we have built an example to simulate a business chain for `Placing orders -> Deducting account balance -> reducing inventory`.</br>
+
+In this example
+- **Seata** is used for distributed transaction commits and rollbacks.
+- **Sentinel** implements traffic control.
+- **Micrometer** is used for link tracing while Zipkin is used for displaying the trace links.
+- Unified calls between various microservices are implemented through **Feign** interfaces.
+
+For detail infomation you can find in the [createOrder method](https://github.com/Charlesbibi/Simple_Cloud/blob/main/simpleCloud_order_server/src/main/java/com/simple/cloud/service/impl/OrderServiceImpl.java)
